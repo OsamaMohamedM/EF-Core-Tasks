@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +15,13 @@ namespace LMS.Entities
 
         [EmailAddress]
         public string Email { get; set; }
+
+        [Comment("Annual salary of the instructor in USD")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Salary { get; set; }
+
+        public Office Office { get; set; }
+
+        public ICollection<Course> Courses { get; set; }
     }
 }

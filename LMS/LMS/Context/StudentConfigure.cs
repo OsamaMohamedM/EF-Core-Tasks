@@ -18,7 +18,7 @@ namespace LMS.Context
                    .HasMaxLength(50);
             builder.Property(s => s.AdmissionDate)
                 .HasColumnName("EnrollmentDate")
-                .HasDefaultValue("GetDate()");
+                .HasDefaultValueSql("GETDATE()");
             builder.Property(e => e.FullName)
                 .HasComputedColumnSql("[FirstName] + ' , ' + [LastName]");
         }

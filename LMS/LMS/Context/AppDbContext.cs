@@ -16,6 +16,21 @@ namespace LMS.Context
                         .ToTable("ArchivedStudents", t => t.ExcludeFromMigrations());
             modelBuilder.ApplyConfiguration(new LMS.Context.SectionConfigure());
 
+            modelBuilder.Entity<Entities.Instructor>()
+                        .HasOne(i => i.Office)
+                        .WithOne(o => o.instructor)
+                        .HasForeignKey<Entities.Office>(o => o.InstructorId);
+
+            modelBuilder.Entity<Entities.Course>()
+                        .HasMany(c => c.sections)
+                        .WithOne(s => s.course)
+                        .HasForeignKey(s => s.CourseId);
+
+            modelBuilder.Entity<Entities.Instructor>()
+                .HasMany(c=>c.Courses)
+                .WithOne(i=>i.Instructor)
+                .HasForeignKey(i=>i.InstructorId);
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -23,5 +38,9 @@ namespace LMS.Context
         public DbSet<Entities.Instructor> Instructors { get; set; }
         public DbSet<Entities.Course> Courses { get; set; }
         public DbSet<Entities.ArchivedStudent> ArchivedStudents { get; set; }
+
+        public DbSet<Entities.Section> Sections { get; set; }
+
+        public DbSet<Entities.Office> Offices { get; set; }
     }
 }
