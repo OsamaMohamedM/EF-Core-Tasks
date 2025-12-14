@@ -8,11 +8,13 @@ namespace LMS.Context
         {
             optionsBuilder.UseSqlServer("Server=OSOS\\OSAMA;Database=LMS;Trusted_Connection=True;TrustServerCertificate=True;");
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new LMS.Context.StudentConfiguration());
             modelBuilder.Entity<Entities.ArchivedStudent>()
                         .ToTable("ArchivedStudents", t => t.ExcludeFromMigrations());
+            modelBuilder.ApplyConfiguration(new LMS.Context.SectionConfigure());
 
             base.OnModelCreating(modelBuilder);
         }
