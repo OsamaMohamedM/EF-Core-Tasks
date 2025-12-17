@@ -34,19 +34,19 @@ appDbContext.Courses.AddRange(
     {
         Title = "Introduction to Programming",
         Description = "Learn the basics of programming using Python.",
-        Price = 199.99
+        Hours = 199.99
     },
     new LMS.Entities.Course
     {
         Title = "Web Development Bootcamp",
         Description = "Become a full-stack web developer with HTML, CSS, JavaScript, and more.",
-        Price = 299.99
+        Hours = 299.99
     },
     new LMS.Entities.Course
     {
         Title = "Data Science Fundamentals",
         Description = "Explore data analysis, visualization, and machine learning techniques.",
-        Price = 399.99
+        Hours = 399.99
     }
 );
 

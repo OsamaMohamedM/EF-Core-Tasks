@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251214184107_Office-Instructor")]
-    partial class OfficeInstructor
+    [Migration("20251217145853_InitialClean")]
+    partial class InitialClean
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,6 +64,9 @@ namespace LMS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("InstructorId")
+                        .HasColumnType("int");
+
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
@@ -72,6 +75,8 @@ namespace LMS.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InstructorId");
 
                     b.ToTable("Courses");
                 });
@@ -155,6 +160,8 @@ namespace LMS.Migrations
 
                     b.HasKey("Id", "Title");
 
+                    b.HasIndex("CourseId");
+
                     b.ToTable("Sections", (string)null);
                 });
 
@@ -193,19 +200,48 @@ namespace LMS.Migrations
                     b.ToTable("Students", (string)null);
                 });
 
+            modelBuilder.Entity("LMS.Entities.Course", b =>
+                {
+                    b.HasOne("LMS.Entities.Instructor", "Instructor")
+                        .WithMany("Courses")
+                        .HasForeignKey("InstructorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Instructor");
+                });
+
             modelBuilder.Entity("LMS.Entities.Office", b =>
                 {
                     b.HasOne("LMS.Entities.Instructor", "instructor")
                         .WithOne("Office")
                         .HasForeignKey("LMS.Entities.Office", "InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("instructor");
                 });
 
+            modelBuilder.Entity("LMS.Entities.Section", b =>
+                {
+                    b.HasOne("LMS.Entities.Course", "course")
+                        .WithMany("sections")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("course");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Course", b =>
+                {
+                    b.Navigation("sections");
+                });
+
             modelBuilder.Entity("LMS.Entities.Instructor", b =>
                 {
+                    b.Navigation("Courses");
+
                     b.Navigation("Office")
                         .IsRequired();
                 });

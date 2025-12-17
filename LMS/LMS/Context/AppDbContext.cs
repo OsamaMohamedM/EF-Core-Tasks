@@ -11,26 +11,19 @@ namespace LMS.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            #region Apply Configurations
+
             modelBuilder.ApplyConfiguration(new LMS.Context.StudentConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.SectionConfigure());
+            modelBuilder.ApplyConfiguration(new LMS.Context.StudentCourseConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.InstructorConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.CourseConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.TAConfiguration());
+
+            #endregion Apply Configurations
+
             modelBuilder.Entity<Entities.ArchivedStudent>()
                         .ToTable("ArchivedStudents", t => t.ExcludeFromMigrations());
-            modelBuilder.ApplyConfiguration(new LMS.Context.SectionConfigure());
-
-            modelBuilder.Entity<Entities.Instructor>()
-                        .HasOne(i => i.Office)
-                        .WithOne(o => o.instructor)
-                        .HasForeignKey<Entities.Office>(o => o.InstructorId);
-
-            modelBuilder.Entity<Entities.Course>()
-                        .HasMany(c => c.sections)
-                        .WithOne(s => s.course)
-                        .HasForeignKey(s => s.CourseId);
-
-            modelBuilder.Entity<Entities.Instructor>()
-                .HasMany(c=>c.Courses)
-                .WithOne(i=>i.Instructor)
-                .HasForeignKey(i=>i.InstructorId);
-
             base.OnModelCreating(modelBuilder);
         }
 

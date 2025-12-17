@@ -9,5 +9,9 @@
         public DateTime EndDate { get; set; }
         public int CourseId { get; set; }
         public Course course { get; set; }
+
+        public TeachingAssistant TeachingAssistant { get; set; }
+        public int TeachingAssistantId { get; set; }
+        public ICollection<StudentCourse> StudentCourses { get; set; }
     }
 }

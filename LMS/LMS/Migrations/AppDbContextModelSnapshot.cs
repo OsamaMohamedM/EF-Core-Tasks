@@ -213,7 +213,7 @@ namespace LMS.Migrations
                     b.HasOne("LMS.Entities.Instructor", "instructor")
                         .WithOne("Office")
                         .HasForeignKey("LMS.Entities.Office", "InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("instructor");
@@ -224,7 +224,7 @@ namespace LMS.Migrations
                     b.HasOne("LMS.Entities.Course", "course")
                         .WithMany("sections")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("course");
