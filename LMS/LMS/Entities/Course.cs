@@ -7,12 +7,13 @@
         public string Description { get; set; }
         public double Hours { get; set; }
         public int? InstructorId { get; set; }
-        public Instructor? Instructor { get; set; }
-        public ICollection<Section> sections { get; set; }
-
         public int DepartmentId { get; set; }
+        public Instructor? Instructor { get; set; }
         public Department Department { get; set; }
 
+        public ICollection<CoursePrerequisite> Prerequisites { get; set; }
+        public ICollection<CoursePrerequisite> Dependents { get; set; }
+        public ICollection<Section> sections { get; set; }
         public ICollection<StudentCourse> StudentCourses { get; set; }
     }
 }
