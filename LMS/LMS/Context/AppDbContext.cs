@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using LMS.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Context
 {
@@ -19,6 +20,7 @@ namespace LMS.Context
             modelBuilder.ApplyConfiguration(new LMS.Context.InstructorConfiguration());
             modelBuilder.ApplyConfiguration(new LMS.Context.CourseConfiguration());
             modelBuilder.ApplyConfiguration(new LMS.Context.TAConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.StaffConfiguration());
 
             #endregion Apply Configurations
 
@@ -27,6 +29,7 @@ namespace LMS.Context
             base.OnModelCreating(modelBuilder);
         }
 
+        public DbSet<StaffMember> Staff { get; set; }
         public DbSet<Entities.Student> Students { get; set; }
         public DbSet<Entities.Instructor> Instructors { get; set; }
         public DbSet<Entities.Course> Courses { get; set; }
@@ -35,5 +38,8 @@ namespace LMS.Context
         public DbSet<Entities.Section> Sections { get; set; }
 
         public DbSet<Entities.Office> Offices { get; set; }
+
+        public DbSet<Entities.StudentCourse> StudentCourses { get; set; }
+        public DbSet<Entities.TeachingAssistant> TAs { get; set; }
     }
 }

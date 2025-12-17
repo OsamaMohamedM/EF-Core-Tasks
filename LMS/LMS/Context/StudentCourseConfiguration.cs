@@ -13,7 +13,6 @@ namespace LMS.Context
 
             builder.Property(sc => sc.Grade)
                    .HasColumnType("decimal(5, 2)")
-                   .HasDefaultValue(0)
                    .IsRequired(false);
 
             builder.Property(sc => sc.EnrollmentDate)

@@ -9,7 +9,7 @@ namespace LMS.Context
         public void Configure(EntityTypeBuilder<Section> builder)
         {
             builder.ToTable("Sections");
-            builder.HasKey(s => new { s.Id, s.Title });
+            builder.HasKey(s => s.Id);
             builder.Property(s => s.Title).IsRequired().HasMaxLength(200);
             builder.Property(s => s.Description).IsRequired().HasMaxLength(1000);
             builder.Property(s => s.StartDate).IsRequired();

@@ -10,6 +10,9 @@
         public Instructor? Instructor { get; set; }
         public ICollection<Section> sections { get; set; }
 
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; }
+
         public ICollection<StudentCourse> StudentCourses { get; set; }
     }
 }
