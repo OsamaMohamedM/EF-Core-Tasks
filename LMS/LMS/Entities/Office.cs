@@ -2,7 +2,7 @@
 
 namespace LMS.Entities
 {
-    internal class Office:BaseEntity
+    internal class Office : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -13,7 +13,7 @@ namespace LMS.Entities
         [Required, MaxLength(15)]
         public string Building { get; set; }
 
-        public int InstructorId { get; set; }
+        public int? InstructorId { get; set; }
         public Instructor instructor { get; set; }
     }
 }
