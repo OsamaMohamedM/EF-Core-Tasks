@@ -1,5 +1,6 @@
 ﻿using LMS.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace LMS.Context
 {
@@ -47,9 +48,35 @@ namespace LMS.Context
                 }
                 else if (entry.State == EntityState.Deleted)
                 {
+                    // 1. تحويل العملية لتحديث بدلاً من مسح
                     entry.State = EntityState.Modified;
                     entry.Entity.IsDeleted = true;
                     entry.Entity.LastModifiedOn = DateTime.UtcNow;
+
+                    // 2. منع تحديث CreatedOn
+                    entry.Property(x => x.CreatedOn).IsModified = false;
+
+                    // 3. تأمين الـ Owned Entities (مثل Address)
+                    // نمر على كل المراجع (References) التي تمثل Owned Types ونغير حالتها لـ Unchanged
+                    foreach (var navigationEntry in entry.Navigations)
+                    {
+                        if (navigationEntry is ReferenceEntry referenceEntry &&
+                            referenceEntry.TargetEntry != null &&
+                            referenceEntry.TargetEntry.Metadata.IsOwned())
+                        {
+                            referenceEntry.TargetEntry.State = EntityState.Unchanged;
+                        }
+                    }
+
+                    // 4. تأمين باقي الخصائص في الكائن الأب
+                    foreach (var property in entry.Properties)
+                    {
+                        if (property.Metadata.Name != nameof(BaseEntity.IsDeleted) &&
+                            property.Metadata.Name != nameof(BaseEntity.LastModifiedOn))
+                        {
+                            property.IsModified = false;
+                        }
+                    }
                 }
             }
 
