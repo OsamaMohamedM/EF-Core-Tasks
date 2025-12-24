@@ -35,6 +35,7 @@ namespace LMS.Context
                    .HasConversion<string>()
                    .HasMaxLength(20)
                    .HasDefaultValue(Enums.StudentStatus.Inactive);
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

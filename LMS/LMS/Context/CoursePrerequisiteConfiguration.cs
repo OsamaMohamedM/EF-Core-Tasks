@@ -19,6 +19,7 @@ namespace LMS.Context
                    .WithMany(c => c.Dependents)
                    .HasForeignKey(cp => cp.PrerequisiteId)
                    .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

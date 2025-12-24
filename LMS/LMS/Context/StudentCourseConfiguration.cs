@@ -29,6 +29,7 @@ namespace LMS.Context
             builder.HasOne(sc => sc.Section)
                    .WithMany(s => s.StudentCourses)
                    .HasForeignKey(sc => sc.SectionId);
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

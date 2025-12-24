@@ -37,6 +37,7 @@ namespace LMS.Context
                     a.Property(p => p.Country).HasMaxLength(50).HasColumnName("Address_Country");
                 }
                 );
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

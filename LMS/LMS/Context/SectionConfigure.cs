@@ -15,6 +15,7 @@ namespace LMS.Context
             builder.Property(s => s.StartDate).IsRequired();
             builder.Property(s => s.EndDate).IsRequired();
             builder.Property(s => s.CourseId).IsRequired();
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace LMS.Context
             builder.HasMany(c => c.Courses)
                    .WithOne(i => i.Instructor)
                    .HasForeignKey(i => i.InstructorId);
+
         }
     }
 }

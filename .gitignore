@@ -54,4 +54,5 @@ TestResult.xml
 nunit-*.xml
 
 .VS
-.docx
+*.docx
+LMS/Migrations/

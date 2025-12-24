@@ -1,6 +1,6 @@
 ﻿namespace LMS.Entities
 {
-    internal class CoursePrerequisite
+    internal class CoursePrerequisite:BaseEntity
     {
         public int CourseId { get; set; }
         public Course Course { get; set; }

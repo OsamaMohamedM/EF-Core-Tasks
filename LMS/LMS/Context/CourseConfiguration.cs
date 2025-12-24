@@ -21,6 +21,7 @@ namespace LMS.Context
                    .HasConversion<string>()
                    .HasMaxLength(50)
                    .HasDefaultValue(Enums.CourseStatus.Draft);
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

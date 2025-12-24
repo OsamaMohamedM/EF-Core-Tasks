@@ -31,6 +31,31 @@ namespace LMS.Context
             base.OnModelCreating(modelBuilder);
         }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    entry.Entity.CreatedOn = DateTime.UtcNow;
+                    entry.Entity.IsDeleted = false;
+                }
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.LastModifiedOn = DateTime.UtcNow;
+                    entry.Property(x => x.CreatedOn).IsModified = false;
+                }
+                else if (entry.State == EntityState.Deleted)
+                {
+                    entry.State = EntityState.Modified;
+                    entry.Entity.IsDeleted = true;
+                    entry.Entity.LastModifiedOn = DateTime.UtcNow;
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
         public DbSet<StaffMember> Staff { get; set; }
         public DbSet<Entities.Student> Students { get; set; }
         public DbSet<Entities.Instructor> Instructors { get; set; }

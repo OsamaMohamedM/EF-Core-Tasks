@@ -2,7 +2,7 @@
 
 namespace LMS.Entities
 {
-    internal class Office
+    internal class Office:BaseEntity
     {
         [Key]
         public int Id { get; set; }

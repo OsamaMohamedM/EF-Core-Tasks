@@ -2,7 +2,7 @@
 
 namespace LMS.Entities
 {
-    internal abstract class StaffMember
+    internal abstract class StaffMember : BaseEntity
     {
         public int Id { get; set; }
 

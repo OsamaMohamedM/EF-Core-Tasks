@@ -27,6 +27,7 @@ namespace LMS.Context
                    .WithOne(c => c.Department)
                    .HasForeignKey(c => c.DepartmentId)
                    .OnDelete(DeleteBehavior.Restrict);
+            builder.HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }

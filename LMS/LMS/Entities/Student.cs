@@ -2,7 +2,7 @@
 
 namespace LMS.Entities
 {
-    internal class Student
+    internal class Student : BaseEntity
     {
         public int Id { get; set; }
         public string FirstName { get; set; }
