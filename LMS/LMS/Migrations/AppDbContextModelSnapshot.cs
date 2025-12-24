@@ -57,28 +57,59 @@ namespace LMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Description")
+                    b.Property<string>("CourseStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Draft");
 
-                    b.Property<int>("InstructorId")
+                    b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<double>("Hours")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(2.0);
+
+                    b.Property<int?>("InstructorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentId");
+
                     b.HasIndex("InstructorId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
-            modelBuilder.Entity("LMS.Entities.Instructor", b =>
+            modelBuilder.Entity("LMS.Entities.CoursePrerequisite", b =>
+                {
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PrerequisiteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseId", "PrerequisiteId");
+
+                    b.HasIndex("PrerequisiteId");
+
+                    b.ToTable("CoursePrerequisites");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Department", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,21 +117,21 @@ namespace LMS.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("DeanId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(18,2)")
-                        .HasComment("Annual salary of the instructor in USD");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Teachers");
+                    b.HasIndex("DeanId")
+                        .IsUnique()
+                        .HasFilter("[DeanId] IS NOT NULL");
+
+                    b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("LMS.Entities.Office", b =>
@@ -135,11 +166,10 @@ namespace LMS.Migrations
             modelBuilder.Entity("LMS.Entities.Section", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
@@ -155,11 +185,77 @@ namespace LMS.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id", "Title");
+                    b.Property<int>("TeachingAssistantId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
+                    b.HasIndex("TeachingAssistantId");
+
                     b.ToTable("Sections", (string)null);
+                });
+
+            modelBuilder.Entity("LMS.Entities.StaffMember", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("nvarchar(21)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("nvarchar(max)")
+                        .HasComputedColumnSql("[FirstName] + ' ' + [LastName]");
+
+                    b.Property<DateTime>("HireDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("Salary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18, 2)")
+                        .HasDefaultValue(0m)
+                        .HasComment("Annual salary of the instructor in USD");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Staff");
+
+                    b.HasDiscriminator().HasValue("StaffMember");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("LMS.Entities.Student", b =>
@@ -192,20 +288,108 @@ namespace LMS.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("StudentStatus")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("Inactive");
+
                     b.HasKey("Id");
 
                     b.ToTable("Students", (string)null);
                 });
 
+            modelBuilder.Entity("LMS.Entities.StudentCourse", b =>
+                {
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EnrollmentDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<decimal?>("Grade")
+                        .HasColumnType("decimal(5, 2)");
+
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CourseId", "StudentId");
+
+                    b.HasIndex("SectionId");
+
+                    b.HasIndex("StudentId");
+
+                    b.ToTable("StudentCourses", (string)null);
+                });
+
+            modelBuilder.Entity("LMS.Entities.Instructor", b =>
+                {
+                    b.HasBaseType("LMS.Entities.StaffMember");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasDiscriminator().HasValue("Instructor");
+                });
+
+            modelBuilder.Entity("LMS.Entities.TeachingAssistant", b =>
+                {
+                    b.HasBaseType("LMS.Entities.StaffMember");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasDiscriminator().HasValue("TeachingAssistant");
+                });
+
             modelBuilder.Entity("LMS.Entities.Course", b =>
                 {
-                    b.HasOne("LMS.Entities.Instructor", "Instructor")
+                    b.HasOne("LMS.Entities.Department", "Department")
                         .WithMany("Courses")
-                        .HasForeignKey("InstructorId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LMS.Entities.Instructor", "Instructor")
+                        .WithMany("Courses")
+                        .HasForeignKey("InstructorId");
+
+                    b.Navigation("Department");
+
                     b.Navigation("Instructor");
+                });
+
+            modelBuilder.Entity("LMS.Entities.CoursePrerequisite", b =>
+                {
+                    b.HasOne("LMS.Entities.Course", "Course")
+                        .WithMany("Prerequisites")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LMS.Entities.Course", "Prerequisite")
+                        .WithMany("Dependents")
+                        .HasForeignKey("PrerequisiteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Prerequisite");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Department", b =>
+                {
+                    b.HasOne("LMS.Entities.Instructor", "Dean")
+                        .WithOne()
+                        .HasForeignKey("LMS.Entities.Department", "DeanId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Dean");
                 });
 
             modelBuilder.Entity("LMS.Entities.Office", b =>
@@ -227,12 +411,175 @@ namespace LMS.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("LMS.Entities.TeachingAssistant", "TeachingAssistant")
+                        .WithMany("Sections")
+                        .HasForeignKey("TeachingAssistantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("TeachingAssistant");
+
                     b.Navigation("course");
+                });
+
+            modelBuilder.Entity("LMS.Entities.StaffMember", b =>
+                {
+                    b.OwnsOne("LMS.Entities.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("StaffMemberId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Address_City");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Address_Country");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)")
+                                .HasColumnName("Address_Street");
+
+                            b1.HasKey("StaffMemberId");
+
+                            b1.ToTable("Staff");
+
+                            b1.WithOwner()
+                                .HasForeignKey("StaffMemberId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LMS.Entities.Student", b =>
+                {
+                    b.OwnsOne("LMS.Entities.Address", "Address", b1 =>
+                        {
+                            b1.Property<int>("StudentId")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Address_City");
+
+                            b1.Property<string>("Country")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("nvarchar(50)")
+                                .HasColumnName("Address_Country");
+
+                            b1.Property<string>("State")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasMaxLength(150)
+                                .HasColumnType("nvarchar(150)")
+                                .HasColumnName("Address_Street");
+
+                            b1.HasKey("StudentId");
+
+                            b1.ToTable("Students");
+
+                            b1.WithOwner()
+                                .HasForeignKey("StudentId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LMS.Entities.StudentCourse", b =>
+                {
+                    b.HasOne("LMS.Entities.Course", "course")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.Entities.Section", "Section")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LMS.Entities.Student", "Student")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Section");
+
+                    b.Navigation("Student");
+
+                    b.Navigation("course");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Instructor", b =>
+                {
+                    b.HasOne("LMS.Entities.Department", "Department")
+                        .WithMany("DepartmentMembers")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("LMS.Entities.TeachingAssistant", b =>
+                {
+                    b.HasOne("LMS.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_Staff_Departments_DepartmentId1");
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("LMS.Entities.Course", b =>
                 {
+                    b.Navigation("Dependents");
+
+                    b.Navigation("Prerequisites");
+
+                    b.Navigation("StudentCourses");
+
                     b.Navigation("sections");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Department", b =>
+                {
+                    b.Navigation("Courses");
+
+                    b.Navigation("DepartmentMembers");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Section", b =>
+                {
+                    b.Navigation("StudentCourses");
+                });
+
+            modelBuilder.Entity("LMS.Entities.Student", b =>
+                {
+                    b.Navigation("StudentCourses");
                 });
 
             modelBuilder.Entity("LMS.Entities.Instructor", b =>
@@ -241,6 +588,11 @@ namespace LMS.Migrations
 
                     b.Navigation("Office")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LMS.Entities.TeachingAssistant", b =>
+                {
+                    b.Navigation("Sections");
                 });
 #pragma warning restore 612, 618
         }

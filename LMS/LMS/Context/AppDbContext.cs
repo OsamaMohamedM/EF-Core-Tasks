@@ -21,6 +21,8 @@ namespace LMS.Context
             modelBuilder.ApplyConfiguration(new LMS.Context.CourseConfiguration());
             modelBuilder.ApplyConfiguration(new LMS.Context.TAConfiguration());
             modelBuilder.ApplyConfiguration(new LMS.Context.StaffConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.DepartmentConfiguration());
+            modelBuilder.ApplyConfiguration(new LMS.Context.CoursePrerequisiteConfiguration());
 
             #endregion Apply Configurations
 
@@ -36,6 +38,9 @@ namespace LMS.Context
         public DbSet<Entities.ArchivedStudent> ArchivedStudents { get; set; }
 
         public DbSet<Entities.Section> Sections { get; set; }
+        public DbSet<Entities.Department> Departments { get; set; }
+
+        public DbSet<Entities.CoursePrerequisite> CoursePrerequisites { get; set; }
 
         public DbSet<Entities.Office> Offices { get; set; }
 

@@ -27,6 +27,16 @@ namespace LMS.Context
 
             builder.Property(s => s.HireDate)
                    .HasDefaultValueSql("GETDATE()");
+
+            builder.OwnsOne(
+                s => s.Address,
+                a =>
+                {
+                    a.Property(p => p.Street).HasMaxLength(150).HasColumnName("Address_Street");
+                    a.Property(p => p.City).HasMaxLength(50).HasColumnName("Address_City");
+                    a.Property(p => p.Country).HasMaxLength(50).HasColumnName("Address_Country");
+                }
+                );
         }
     }
 }

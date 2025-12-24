@@ -1,4 +1,6 @@
-﻿namespace LMS.Entities
+﻿using LMS.Enums;
+
+namespace LMS.Entities
 {
     internal class Course
     {
@@ -11,6 +13,7 @@
         public Instructor? Instructor { get; set; }
         public Department Department { get; set; }
 
+        public CourseStatus CourseStatus { get; set; }
         public ICollection<CoursePrerequisite> Prerequisites { get; set; }
         public ICollection<CoursePrerequisite> Dependents { get; set; }
         public ICollection<Section> sections { get; set; }

@@ -20,5 +20,7 @@ namespace LMS.Entities
         public Department Department { get; set; }
 
         public int DepartmentId { get; set; }
+
+        public Address Address { get; set; }
     }
 }

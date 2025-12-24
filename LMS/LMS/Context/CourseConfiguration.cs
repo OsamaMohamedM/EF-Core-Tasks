@@ -17,6 +17,10 @@ namespace LMS.Context
                    .WithOne(s => s.course)
                    .HasForeignKey(s => s.CourseId)
                    .OnDelete(DeleteBehavior.Restrict);
+            builder.Property(c => c.CourseStatus)
+                   .HasConversion<string>()
+                   .HasMaxLength(50)
+                   .HasDefaultValue(Enums.CourseStatus.Draft);
         }
     }
 }

@@ -21,6 +21,20 @@ namespace LMS.Context
                 .HasDefaultValueSql("GETDATE()");
             builder.Property(e => e.FullName)
                 .HasComputedColumnSql("[FirstName] + ' , ' + [LastName]");
+
+            builder.OwnsOne(
+                s => s.Address,
+                a =>
+                {
+                    a.Property(p => p.Street).HasMaxLength(150).HasColumnName("Address_Street");
+                    a.Property(p => p.City).HasMaxLength(50).HasColumnName("Address_City");
+                    a.Property(p => p.Country).HasMaxLength(50).HasColumnName("Address_Country");
+                }
+                );
+            builder.Property(s => s.StudentStatus)
+                   .HasConversion<string>()
+                   .HasMaxLength(20)
+                   .HasDefaultValue(Enums.StudentStatus.Inactive);
         }
     }
 }

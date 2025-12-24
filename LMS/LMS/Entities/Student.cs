@@ -1,4 +1,6 @@
-﻿namespace LMS.Entities
+﻿using LMS.Enums;
+
+namespace LMS.Entities
 {
     internal class Student
     {
@@ -6,6 +8,8 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullName { get; set; }
+        public Address Address { get; set; }
+        public StudentStatus StudentStatus { get; set; }
         public DateTime AdmissionDate { get; set; }
         public ICollection<StudentCourse> StudentCourses { get; set; }
     }
