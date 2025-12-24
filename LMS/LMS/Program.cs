@@ -3,7 +3,6 @@ using LMS.DataSeed;
 using LMS.Entities;
 using LMS.Services;
 
-Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine("╔════════════════════════════════════════════════════════════════════════╗");
 Console.WriteLine("║        LMS - Learning Management System Demo                           ║");
 Console.WriteLine("║     Showcasing EF Core 8 Skills & Data Manipulation                    ║");
